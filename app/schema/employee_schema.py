@@ -1,10 +1,10 @@
-from marshmallow import schema,fields
+from marshmallow import Schema,fields
+from app.models.employee import Employee
 
-class employeeschema(schema):
-     emp_id = fields.Int(required=True)
-     fname = fields.Str()
-     lname = fields.Str()
-     email = fields.Str()
-     company_id = fields.Int()
-     project_id = fields.Int()
-    
+class employeeschema(Schema):
+	emp_id = fields.Integer(dump_only=True)
+	fname = fields.String()
+	lname = fields.String()
+	email = fields.String()
+	company_id = fields.Integer()
+	project_id = fields.Integer()
