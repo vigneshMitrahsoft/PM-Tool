@@ -23,14 +23,15 @@ def get_stack():
 @app.route('/createstack', methods = ('POST',))
 def create_stack():
 	data = request.json
+	schemas =  TechStackSchema.load(data)
 	tech = TechStack(
-		tech_name =  data["tech_name"],
-		tech_area_id = data["tech_area_id"],
+		tech_name =  schemas["tech_name"],
+		tech_area_id = schemas["tech_area_id"],
 		created_by = '1'
     )
 	db.add(tech)
 	db.commit()
-	return jsonify(TechStackSchema().dump(tech))
+	return jsonify({"message" : "Created Successfully"})
 
 @app.route('/updatestack/<int:id>', methods = ('PUT',))
 def update_stack(id):
@@ -38,11 +39,12 @@ def update_stack(id):
 	if not tech:
 		return jsonify({"message" : "Id does not exist"})
 	data = request.json
-	tech.tech_name = data.get('tech_name', tech.tech_name)
-	tech.tech_area_id = data.get('tech_area_id', tech.tech_area_id)
+	schemas = TechStackSchema.load(data)
+	tech.tech_name = schemas.get('tech_name', tech.tech_name)
+	tech.tech_area_id = schemas.get('tech_area_id', tech.tech_area_id)
 	tech.updated_by = '1'
 	db.commit()
-	return jsonify(TechStackSchema().dump(tech))
+	return jsonify({"message" : "Updated Successfully"})
 
 @app.route('/deletestack/<int:id>', methods = ('DELETE',))
 def delete_stack(id):
