@@ -1,6 +1,6 @@
 from flask import Flask
 from config import base, engine
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, Date
+from sqlalchemy import Column, Integer, String, DateTime, Date
 from datetime import datetime
 
 class milestone(base):
