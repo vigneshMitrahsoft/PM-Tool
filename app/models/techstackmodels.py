@@ -1,17 +1,12 @@
-from sqlalchemy.orm import relationship,declarative_base
+from sqlalchemy.orm import relationship
+from config import Base
 from sqlalchemy import Column,Integer,String,ForeignKey, DateTime
 from datetime import datetime
-from config import engine
-
-
-Base = declarative_base()
-
 
 class TechstackArea(Base):
 	__tablename__ = 'techstackarea'
 	id = Column(Integer, primary_key = True)
 	tech_stack_area_name = Column(String)
-
 	techstack = relationship('TechStack', back_populates = 'tech', cascade="all,delete")
 
 	def __str__(self):
@@ -27,8 +22,5 @@ class TechStack(Base):
 	created_by = Column(Integer)
 	updated_at = Column(DateTime, default = datetime.now(), onupdate = datetime.now())
 	updated_by = Column(Integer)
-
-
 	tech = relationship('TechstackArea', back_populates = 'techstack')
 
-Base.metadata.create_all(engine)

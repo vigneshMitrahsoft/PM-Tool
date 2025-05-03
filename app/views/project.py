@@ -1,4 +1,5 @@
-from models.projectmodels  import Project,  engine
+from models.projectmodels  import Project
+from config import engine
 from sqlalchemy.orm import sessionmaker
 from flask import jsonify, Flask, request
 from schemas.projectschema import ProjectSchema

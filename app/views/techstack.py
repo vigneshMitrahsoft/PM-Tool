@@ -1,4 +1,5 @@
-from models.techstackmodels import TechstackArea, TechStack, engine
+from models.techstackmodels import TechstackArea, TechStack
+from config import engine
 from sqlalchemy.orm import sessionmaker
 from flask import jsonify, Flask, request
 from schemas.techstackschema import TechstackAreaSchema, TechStackSchema

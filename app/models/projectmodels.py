@@ -1,9 +1,6 @@
-from sqlalchemy.orm import relationship,declarative_base
 from sqlalchemy import Column,Integer,String,ForeignKey,Date, DateTime
 from datetime import datetime
-from config import engine
-
-Base = declarative_base()
+from config import Base
 
 class Project(Base):
 	__tablename__ = 'project'
@@ -17,5 +14,3 @@ class Project(Base):
 	created_by = Column(Integer)
 	updated_at = Column(DateTime, default = datetime.now(), onupdate = datetime.now())
 	updated_by = Column(Integer)
-
-Base.metadata.create_all(engine)
