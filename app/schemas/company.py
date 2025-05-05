@@ -1,4 +1,3 @@
-# from app.models.company_models import company
 from flask_marshmallow import Marshmallow
 from marshmallow import Schema, fields
 
