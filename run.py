@@ -1,6 +1,5 @@
 from flask import Flask
-from app.views.employee_views import app
-
+from app.views.company_views import main
 
 if __name__ == '__main__':
-    app.run(debug=True)
+	main.run(debug = True)
