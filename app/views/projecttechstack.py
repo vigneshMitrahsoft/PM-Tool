@@ -1,50 +1,51 @@
-from models.projecttechstackmodels import ProjectTechStack
+from models.projecttechstack import ProjectTechStack
 from config import engine
 from sqlalchemy.orm import sessionmaker
-from flask import jsonify, Flask, request
-from schemas.projecttechstackschema import ProjectTechStackSchema
+from flask import jsonify, Flask, request, Blueprint
+from schemas.projecttechstack import ProjectTechStackSchema
 
 Session = sessionmaker(bind = engine)
 db = Session()
 
-app = Flask(__name__)
+projecttechstack_bp = Blueprint('projecttechstack_bp', __name__)
 
-@app.route('/projectstacks', methods = ('GET',))
+@projecttechstack_bp.route('/api/projectstacks_list', methods = ('GET',))
 def get_project_stack():
-	projectstack = db.query(ProjectTechStack).all()
+	project_stack = db.query(ProjectTechStack).all()
 	schema = ProjectTechStackSchema(many=True)
-	return jsonify(schema.dump(projectstack))
+	return jsonify(schema.dump(project_stack))
 
-@app.route('/createprojectstack', methods = ('POST',))
+@projecttechstack_bp.route('/api/create_projectstack', methods = ('POST',))
 def create_project_stack():
 	data = request.json
-	projectstack = ProjectTechStack(
-		project_id =  data["project_id"],
-		techstack_id = data["techstack_id"],
+	schemas = ProjectTechStackSchema().load(data)
+	project_stack = ProjectTechStack(
+		project_id =  schemas["project_id"],
+		techstack_id = schemas["techstack_id"],
 		created_by = '1'
     )
-	db.add(projectstack)
+	db.add(project_stack)
 	db.commit()
 	return jsonify({"message" : "Created Successfully"})
 
-@app.route('/updateprojectstack/<int:id>', methods = ('PUT',))
+@projecttechstack_bp.route('/api/update_projectstack/<int:id>', methods = ('PUT',))
 def update_project_stack(id):
-	projectstack = db.query(ProjectTechStack).get(id)
-	if not projectstack:
+	project_stack = db.query(ProjectTechStack).get(id)
+	if not project_stack:
 		return jsonify({"message" : "Id does not exist"})
 	data = request.json
-	schemas = ProjectTechStackSchema.load(data)
-	projectstack.project_id = schemas.get('project_id', projectstack.project_id)
-	projectstack.techstack_id = schemas.get('techstack_id', projectstack.techstack_id)
-	projectstack.updated_by = '1'
+	schemas = ProjectTechStackSchema().load(data)
+	project_stack.project_id = schemas.get('project_id', project_stack.project_id)
+	project_stack.techstack_id = schemas.get('techstack_id', project_stack.techstack_id)
+	project_stack.updated_by = '1'
 	db.commit()
 	return jsonify({"message" : "Updated Successfully"})
 
-@app.route('/deletestack/<int:id>', methods = ('DELETE',))
+@projecttechstack_bp.route('/api/delete_projectstack/<int:id>', methods = ('DELETE',))
 def delete_stack(id):
-	tech = db.query(ProjectTechStack).get(id)
-	if not tech:
+	project_stack = db.query(ProjectTechStack).get(id)
+	if not project_stack:
 		return jsonify({"message" : "Id does not exist"})
-	db.delete(tech)
+	db.delete(project_stack)
 	db.commit()
 	return jsonify({"message" : "Deleted Successfully"})

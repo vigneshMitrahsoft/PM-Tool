@@ -1,21 +1,21 @@
-from models.projectmodels  import Project
+from models.project import Project
 from config import engine
 from sqlalchemy.orm import sessionmaker
-from flask import jsonify, Flask, request
-from schemas.projectschema import ProjectSchema
+from flask import jsonify, request, Blueprint
+from schemas.project import ProjectSchema
 
 Session = sessionmaker(bind = engine)
 db = Session()
 
-app = Flask(__name__)
+project_bp = Blueprint('project_bp', __name__ )
 
-@app.route('/projects', methods = ('GET',))
+@project_bp.route('/api/project_list', methods = ('GET',))
 def get_projects():
 	projects = db.query(Project).all()
 	schema = ProjectSchema(many=True)
 	return jsonify(schema.dump(projects))
 
-@app.route('/createproject', methods = ('POST',))
+@project_bp.route('/api/create_project', methods = ('POST',))
 def create_project():
 	data = request.json
 	schemas = ProjectSchema().load(data)
@@ -30,7 +30,7 @@ def create_project():
 	db.commit()
 	return jsonify({"message" : "created successfully"})
 
-@app.route('/updateproject/<int:id>', methods = ('PUT',))
+@project_bp.route('/api/update_project/<int:id>', methods = ('PUT',))
 def update_project(id):
 	tech = db.query(Project).get(id)
 	if not tech:
@@ -44,12 +44,11 @@ def update_project(id):
 	db.commit()
 	return jsonify({"message": "updated successfully"})
 
-@app.route('/deleteproject/<int:id>', methods = ('DELETE',))
-def delete_stack(id):
+@project_bp.route('/api/delete_project/<int:id>', methods = ('DELETE',))
+def delete_project(id):
 	project = db.query(Project).get(id)
 	if not project:
 		return jsonify({"message" : "Id does not exist"})
 	db.delete(project)
 	db.commit()
 	return jsonify({"message" : "Deleted Successfully"})
-

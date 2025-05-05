@@ -1,27 +1,27 @@
-from models.techstackmodels import TechstackArea, TechStack
+from models.techstack import TechstackArea, TechStack
 from config import engine
 from sqlalchemy.orm import sessionmaker
-from flask import jsonify, Flask, request
-from schemas.techstackschema import TechstackAreaSchema, TechStackSchema
+from flask import jsonify, request, Blueprint
+from schemas.techstack import TechstackAreaSchema, TechStackSchema
 
 Session = sessionmaker(bind = engine)
 db = Session()
 
-app = Flask(__name__)
+tech_stack_bp = Blueprint('tech_stack_bp', __name__)
 
-@app.route('/areas', methods = ('GET',))
+@tech_stack_bp.route('/api/areas', methods = ('GET',))
 def get_areas():
 	areas = db.query(TechstackArea).all()
 	schema = TechstackAreaSchema(many=True)
 	return jsonify(schema.dump(areas))
 
-@app.route('/stacks', methods = ('GET',))
+@tech_stack_bp.route('/api/stacks', methods = ('GET',))
 def get_stack():
 	stacks = db.query(TechStack).all()
 	schema = TechStackSchema(many=True)
 	return jsonify(schema.dump(stacks))
 
-@app.route('/createstack', methods = ('POST',))
+@tech_stack_bp.route('/api/create_stack', methods = ('POST',))
 def create_stack():
 	data = request.json
 	schemas =  TechStackSchema.load(data)
@@ -34,7 +34,7 @@ def create_stack():
 	db.commit()
 	return jsonify({"message" : "Created Successfully"})
 
-@app.route('/updatestack/<int:id>', methods = ('PUT',))
+@tech_stack_bp.route('/api/update_stack/<int:id>', methods = ('PUT',))
 def update_stack(id):
 	tech = db.query(TechStack).get(id)
 	if not tech:
@@ -47,7 +47,7 @@ def update_stack(id):
 	db.commit()
 	return jsonify({"message" : "Updated Successfully"})
 
-@app.route('/deletestack/<int:id>', methods = ('DELETE',))
+@tech_stack_bp.route('/api/delete_stack/<int:id>', methods = ('DELETE',))
 def delete_stack(id):
 	tech = db.query(TechStack).get(id)
 	if not tech:
@@ -55,4 +55,3 @@ def delete_stack(id):
 	db.delete(tech)
 	db.commit()
 	return jsonify({"message" : "Deleted Successfully"})
-

@@ -4,7 +4,6 @@ from config import Base
 
 class Project(Base):
 	__tablename__ = 'project'
-
 	project_id = Column(Integer, primary_key=True)
 	project_name = Column(String)
 	budget = Column(Integer)

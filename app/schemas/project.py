@@ -1,5 +1,4 @@
 from marshmallow import Schema, fields
-from models.projectmodels import Project
 
 class ProjectSchema(Schema):
 	project_id = fields.Int(dump_only = True)
