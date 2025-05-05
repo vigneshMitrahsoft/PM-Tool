@@ -1,0 +1,57 @@
+from models.techstack import TechstackArea, TechStack
+from config import engine
+from sqlalchemy.orm import sessionmaker
+from flask import jsonify, request, Blueprint
+from schemas.techstack import TechstackAreaSchema, TechStackSchema
+
+Session = sessionmaker(bind = engine)
+db = Session()
+
+tech_stack_bp = Blueprint('tech_stack_bp', __name__)
+
+@tech_stack_bp.route('/api/areas', methods = ('GET',))
+def get_areas():
+	areas = db.query(TechstackArea).all()
+	schema = TechstackAreaSchema(many=True)
+	return jsonify(schema.dump(areas))
+
+@tech_stack_bp.route('/api/stacks', methods = ('GET',))
+def get_stack():
+	stacks = db.query(TechStack).all()
+	schema = TechStackSchema(many=True)
+	return jsonify(schema.dump(stacks))
+
+@tech_stack_bp.route('/api/create_stack', methods = ('POST',))
+def create_stack():
+	data = request.json
+	schemas =  TechStackSchema.load(data)
+	tech = TechStack(
+		tech_name =  schemas["tech_name"],
+		tech_area_id = schemas["tech_area_id"],
+		created_by = '1'
+    )
+	db.add(tech)
+	db.commit()
+	return jsonify({"message" : "Created Successfully"})
+
+@tech_stack_bp.route('/api/update_stack/<int:id>', methods = ('PUT',))
+def update_stack(id):
+	tech = db.query(TechStack).get(id)
+	if not tech:
+		return jsonify({"message" : "Id does not exist"})
+	data = request.json
+	schemas = TechStackSchema.load(data)
+	tech.tech_name = schemas.get('tech_name', tech.tech_name)
+	tech.tech_area_id = schemas.get('tech_area_id', tech.tech_area_id)
+	tech.updated_by = '1'
+	db.commit()
+	return jsonify({"message" : "Updated Successfully"})
+
+@tech_stack_bp.route('/api/delete_stack/<int:id>', methods = ('DELETE',))
+def delete_stack(id):
+	tech = db.query(TechStack).get(id)
+	if not tech:
+		return jsonify({"message" : "Id does not exist"})
+	db.delete(tech)
+	db.commit()
+	return jsonify({"message" : "Deleted Successfully"})
