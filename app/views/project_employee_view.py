@@ -1,43 +1,40 @@
-from flask import request, jsonify, Flask
+from flask import request, jsonify, Flask, Blueprint
 from config import session
-from app.models.Project_employee import Project_employee
-from app.schema.Project_employee_schema import project_employee_schema
-from flask_migrate import Migrate
+from app.models.project_employee import projectEmployee
+from app.schema.project_employee_schema import projectEmployeeSchema
 
-app = Flask(__name__)
+project_employee_bp = Blueprint('Project_employee_bp',__name__)
 
-migrate = Migrate(app, session)
-
-@app.route('/add_employee', methods=['POST'])
+@project_employee_bp.route('/api/project_employee_create', methods=('POST',))
 def employee_role():
 	data = request.json
-	project_employee = Project_employee(emp_id=data['emp_id'],  project_id=data['role_id'])
+	project_employee = projectEmployee(emp_id=data['emp_id'],  project_id=data['project_id'])
 	session.add(project_employee)
 	session.commit()
-	return jsonify(project_employee_schema().dump(project_employee))
+	return jsonify(projectEmployeeSchema().dump(project_employee))
 
-@app.route('/', methods=['GET'])
+@project_employee_bp.route('/api/project_employee_list', methods=('GET',))
 def get_all():
-	all_project_employee = session.query(Project_employee).all()
-	return jsonify(project_employee_schema().dump(all_project_employee))
+	all_project_employee = session.query(projectEmployee).all()
+	return jsonify(projectEmployeeSchema().dump(all_project_employee))
 
-@app.route('/<int:id>', methods=['GET'])
+@project_employee_bp.route('/api/project_employee_list/<int:id>', methods=('GET',))
 def get_one(id):
-   project_employee = session.query(Project_employee).get(id)
-   return jsonify(project_employee_schema().dump(project_employee))
+   project_employee = session.query(projectEmployee).get(id)
+   return jsonify(projectEmployeeSchema().dump(project_employee))
 
-@app.route('/update/<int:id>', methods=['PUT'])
+@project_employee_bp.route('/api/project_employee_update/<int:id>', methods=('PUT',))
 def update(id):
-   project_employee = session.query(Project_employee).get(id)
+   project_employee = session.query(projectEmployee).get(id)
    data = request.json
    project_employee.emp_id=data.get('emp_id',project_employee.emp_id) 
    project_employee.role_id=data.get('role_id',project_employee.role_id)
    session.commit()
-   return jsonify(project_employee_schema().dump(project_employee))
+   return jsonify(projectEmployeeSchema().dump(project_employee))
 
-@app.route('/<int:id>', methods=['DELETE'])
+@project_employee_bp.route('/api/project_employee_delete/<int:id>', methods=('DELETE',))
 def delete(id):
-	project_employee = session.query().get(id)
-	session.delete(project_employee)
+	project_employee_delete = session.query(projectEmployee).get(id)
+	session.delete(project_employee_delete)
 	session.commit()
 	return '',204

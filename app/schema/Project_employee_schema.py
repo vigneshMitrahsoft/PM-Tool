@@ -1,6 +1,6 @@
 from marshmallow import Schema,fields
-from app.models.Project_employee import Project_employee
+from app.models.project_employee import projectEmployee
 
-class project_employee_schema(Schema):
+class projectEmployeeSchema(Schema):
 	emp_id = fields.Integer()
 	project_id = fields.Integer()

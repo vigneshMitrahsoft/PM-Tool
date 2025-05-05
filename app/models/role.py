@@ -1,7 +1,7 @@
 from config import base,engine
 from sqlalchemy import Column, Integer, String
 
-class Role(base):
+class role(base):
 	__tablename__='role'
 	
 	role_id = Column(Integer, primary_key=True)

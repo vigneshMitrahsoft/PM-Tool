@@ -1,7 +1,7 @@
 from config import base,engine
 from sqlalchemy import Column, Integer, String
 
-class Employee(base):
+class employee(base):
 	__tablename__='employee'
 	
 	emp_id = Column(Integer, primary_key=True)

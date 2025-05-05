@@ -1,12 +1,12 @@
 from config import base,engine
-from sqlalchemy import Column, Integer, DATETIME
+from sqlalchemy import Column, Integer, DateTime
 
-class Employee_role(base):
+class employeeRole(base):
 	__tablename__='employee_role'
 	
 	emp_id = Column(Integer, primary_key=True)
 	role_id = Column(Integer)
-	Created_at = Column(DATETIME)
-	update_at = Column(DATETIME)
+	Created_at = Column(DateTime)
+	update_at = Column(DateTime)
 
 base.metadata.create_all(engine)

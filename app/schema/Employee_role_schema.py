@@ -1,6 +1,6 @@
 from marshmallow import Schema,fields
-from app.models.Employee_role import Employee_role
+from app.models.employee_role import employeeRole
 
-class employee_role_schema(Schema):
+class employeeRoleSchema(Schema):
 	emp_id = fields.Integer()
 	role_id = fields.Integer()

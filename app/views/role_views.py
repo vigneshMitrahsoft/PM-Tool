@@ -1,42 +1,40 @@
-from flask import request, jsonify, Flask
+from flask import request, jsonify, Flask, Blueprint
 from config import session
-from app.models.role import Role
-from app.schema.role_schema import roleschema
-from flask_migrate import Migrate
+from app.models.role import role
+from app.schema.role_schema import roleSchema
 
-app = Flask(__name__)
-migrate = Migrate(app, session)
+role_bp = Blueprint('role',__name__)
 
-@app.route('/add_employee', methods=['POST'])
+@role_bp.route('/api/role_create', methods=('POST',))
 def add_employee():
 	data = request.json
-	new_role = Role(name=data['name'], description=data['description'])
+	new_role = role(name=data['name'], description=data['description'])
 	session.add(new_role)  
 	session.commit()
-	return jsonify(roleschema().dump(new_role))
+	return jsonify(roleSchema().dump(new_role))
 
-@app.route('/', methods=['GET'])
+@role_bp.route('/api/role_list', methods=('GET',))
 def get_all():
-	all_role = session.query(Role).all()
-	return jsonify(roleschema().dump(all_role))
+	all_role = session.query(role).all()
+	return jsonify(roleSchema().dump(all_role))
 
-@app.route('/<int:id>', methods=['GET'])
+@role_bp.route('/api/role_list/<int:id>', methods=('GET',))
 def get_one(id):
-	role = session.query(Role).get(id)
-	return jsonify(roleschema().dump(role))
+	role_get = session.query(role).get(id)
+	return jsonify(roleSchema().dump(role_get))
 
-@app.route('/update/<int:id>', methods=['PUT'])
+@role_bp.route('/api/role_update/<int:id>', methods=('PUT',))
 def update(id):
-	role = session.query(Role).get(id)
+	role_update = session.query(role).get(id)
 	data = request.json
-	role.name = data.get('name', role.name)
-	role.description=data.get('description', role.description)
+	role_update.name = data.get('name', role_update.name)
+	role_update.description=data.get('description', role_update.description)
 	session.commit()
-	return jsonify(roleschema().dump(role))
+	return jsonify(roleSchema().dump(role))
 
-@app.route('/delete/<int:id>', methods=['DELETE'])
+@role_bp.route('/api/role_delete/<int:id>', methods=('DELETE',))
 def delete(id):
-	role = session.query(Role).get(id)
-	session.delete(role)
+	role_delete = session.query(role).get(id)
+	session.delete(role_delete)
 	session.commit()
 	return '',204

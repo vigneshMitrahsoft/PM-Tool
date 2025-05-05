@@ -1,13 +1,13 @@
 from config import base,engine
-from sqlalchemy import Column, Integer, DATETIME, DATE
+from sqlalchemy import Column, Integer, DateTime, DATE
 
-class Project_employee(base):
-	__tablename__='Project_employee'
+class projectEmployee(base):
+	__tablename__='projectEmployee'
 	
-	emp_id = Column(Integer)
+	emp_id = Column(Integer, primary_key=True)
 	project_id = Column(Integer)
-	Created_at = Column(DATETIME)
-	update_at = Column(DATETIME)
+	Created_at = Column(DateTime)
+	update_at = Column(DateTime)
 	Start_date= Column(DATE)
 	End_date= Column(DATE)
 	
