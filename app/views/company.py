@@ -1,22 +1,22 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Blueprint
 from config import engine
-from app.models.company_models import company
+from app.models.company import company
 from sqlalchemy.orm import sessionmaker
-from app.schemas.company_schema import companySchema
+from app.schemas.company import companySchema
 
 Session = sessionmaker(bind = engine)
 session = Session()
 
-main = Flask(__name__)
+company_bp = Blueprint('company_bp', __name__)
 
-@main.route('/company', methods = ('GET',))
+@company_bp.route('/api/company', methods = ('GET',))
 def list_company():
 	list_of_company = session.query(company).all()
 	schema = companySchema(many = True)
 	result = schema.dump(list_of_company)
 	return jsonify(result)
 
-@main.route('/company/add', methods = ('POST',))
+@company_bp.route('/api/create_company', methods = ('POST',))
 def add_company():
 	data = request.json
 	company_schema = companySchema().load(data)
@@ -32,7 +32,7 @@ def add_company():
 	session.commit()
 	return "created"
 
-@main.route('/company/update/<int:id>', methods = ('PATCH',))
+@company_bp.route('/api/update_company/<int:id>', methods = ('PATCH',))
 def update_company(id):
 	update_company = session.query(company).get(id)
 	data = request.json
@@ -46,7 +46,7 @@ def update_company(id):
 	session.commit()
 	return jsonify({'message' : 'successfully updated'})
 
-@main.route('/company/delete/<int:id>', methods = ('DELETE',))
+@company_bp.route('/api/delete_company/<int:id>', methods = ('DELETE',))
 def delete_company(id):
 	user = session.query(company).get(id)
 	session.delete(user)

@@ -1,22 +1,22 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Blueprint
 from config import engine
-from app.models.milestone_models import milestone
+from app.models.milestone import milestone
 from sqlalchemy.orm import sessionmaker
-from app.schemas.milestone_schema import milestoneSchema
+from app.schemas.milestone import milestoneSchema
 
 Session = sessionmaker(bind = engine)
 session = Session()
 
-main = Flask(__name__)
+milestone_bp = Blueprint('milestone_bp', __name__)
 
-@main.route('/milestone', methods = ('GET',))
+@milestone_bp.route('/api/milestone', methods = ('GET',))
 def list_milestone():
 	list_of_milestone = session.query(milestone).all()
 	schema = milestoneSchema(many = True)
 	result = schema.dump(list_of_milestone)
 	return jsonify(result)
 
-@main.route('/milestone/add', methods = ('POST',))
+@milestone_bp.route('/api/add_milestone', methods = ('POST',))
 def add_milestone():
 	data = request.json
 	milestone_schema = milestoneSchema().load(data)
@@ -35,7 +35,7 @@ def add_milestone():
 	session.commit()
 	return "created"
 
-@main.route('/milestone/update/<int:milestone_id>', methods = ('patch',))
+@milestone_bp.route('/api/update_milestone/<int:milestone_id>', methods = ('patch',))
 def update_milestone(milestone_id):
 	update_milestone = session.query(milestone).get(milestone_id)
 	data = request.json
@@ -51,7 +51,7 @@ def update_milestone(milestone_id):
 	session.commit()
 	return "updated"
 
-@main.route('/milestone/delete/<int:milestone_id>', methods = ('DELETE',))
+@milestone_bp.route('/api/delete_milestone/<int:milestone_id>', methods = ('DELETE',))
 def delete_company(milestone_id):
 	user = session.query(milestone).get(milestone_id)
 	session.delete(user)

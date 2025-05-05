@@ -1,4 +1,4 @@
-from app.models.timesheet_models import timesheet
+from app.models.timesheet import timesheet
 from flask_marshmallow import Marshmallow
 from marshmallow import Schema, fields
 
@@ -8,5 +8,3 @@ class timesheetSchema(Schema):
     description = fields.String()
     hours = fields.DateTime()
     status = fields.String()
-    
-    

@@ -1,7 +1,8 @@
 from flask import Flask
 from config import base, engine
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from datetime import datetime
+
 
 class timesheet(base):
     __tablename__ = "timesheet"
@@ -16,5 +17,5 @@ class timesheet(base):
     created_by = Column(Integer, nullable = True)
     updated_at = Column(DateTime, nullable = True, default = datetime.now, onupdate = datetime.now())
     updated_by = Column(Integer, nullable = True)
- 
+    
 base.metadata.create_all(engine)

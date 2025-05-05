@@ -1,4 +1,4 @@
-from app.models.milestone_models import milestone
+from app.models.milestone import milestone
 from flask_marshmallow import Marshmallow
 from marshmallow import Schema, fields
 
@@ -10,4 +10,3 @@ class milestoneSchema(Schema):
     actual_enddate = fields.Date()
     status = fields.String()
     description = fields.String()
-    

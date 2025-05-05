@@ -1,22 +1,22 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Blueprint
 from config import engine
-from app.models.timesheet_models import timesheet
+from app.models.timesheet import timesheet
 from sqlalchemy.orm import sessionmaker
-from app.schemas.timesheet_schema import timesheetSchema
+from app.schemas.timesheet import timesheetSchema
 
 Session = sessionmaker(bind = engine)
 session = Session()
 
-main = Flask(__name__)
+timesheet_bp = Blueprint('timesheet_bp', __name__)
 
-@main.route('/timesheet', methods = ('GET',))
+@timesheet_bp.route('/api/timesheet', methods = ('GET',))
 def list_milestone():
 	list_of_timesheet = session.query(timesheet).all()
 	schema = timesheetSchema(many = True)
 	result = schema.dump(list_of_timesheet)
 	return jsonify(result)
 
-@main.route('/timesheet/add', methods = ('POST',))
+@timesheet_bp.route('/api/add_timesheet', methods = ('POST',))
 def add_timesheet():
 	data = request.json
 	timesheet_schema = timesheetSchema().load(data)
@@ -31,7 +31,7 @@ def add_timesheet():
 	session.commit()
 	return "created"
 
-@main.route('/timesheet/update/<int:id>', methods = ('patch',))
+@timesheet_bp.route('/api/update_timesheet/<int:id>', methods = ('patch',))
 def update_milestone(id):
 	update_timesheet = session.query(timesheet).get(id)
 	data = request.json
@@ -44,7 +44,7 @@ def update_milestone(id):
 	session.commit()
 	return "updated"
 
-@main.route('/timesheet/delete/<int:id>', methods = ('DELETE',))
+@timesheet_bp.route('/api/delete_timesheet/<int:id>', methods = ('DELETE',))
 def delete_company(id):
 	user = session.query(timesheet).get(id)
 	session.delete(user)
