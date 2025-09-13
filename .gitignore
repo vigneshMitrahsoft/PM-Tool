@@ -1,0 +1,14 @@
+#Environments
+.venv
+env
+
+# Django stuff
+# db.sqlite3
+
+
+#migreation file
+__pycache__
+
+*/migrations/*
+!*/migrations/__init__.py
+settings_local.py

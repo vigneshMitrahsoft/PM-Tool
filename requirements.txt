@@ -1,0 +1,5 @@
+Flask
+SQLAlchemy
+marshmallow
+psycopg2
+flask_marshmallow
